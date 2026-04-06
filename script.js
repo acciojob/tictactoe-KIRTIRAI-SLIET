@@ -1,70 +1,79 @@
 //your JS code here. If required.
-document.addEventListener("DOMContentLoaded", function () {
+const submitBtn = document.getElementById("submit");
+const setupDiv = document.getElementById("setup");
+const gameDiv = document.getElementById("game");
+const boardDiv = document.getElementById("board");
+const messageDiv = document.querySelector(".message");
 
-	const submitBtn = document.getElementById("submit");
-	const player1Input = document.getElementById("player1");
-	const player2Input = document.getElementById("player2");
+let player1 = "";
+let player2 = "";
+let currentPlayer = "X";
+let boardState = ["", "", "", "", "", "", "", "", ""];
 
-	const startScreen = document.getElementById("start-screen");
-	const gameScreen = document.getElementById("game-screen");
+const winPatterns = [
+  [0,1,2],[3,4,5],[6,7,8],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6]
+];
 
-	const message = document.querySelector(".message");
-	const cells = document.querySelectorAll(".cell");
+submitBtn.addEventListener("click", () => {
+  player1 = document.getElementById("player-1").value;
+  player2 = document.getElementById("player-2").value;
 
-	let player1 = "";
-	let player2 = "";
-	let currentPlayer = "X";
-	let gameActive = true;
+  if (!player1 || !player2) {
+	alert("Enter both player names");
+	return;
+  }
 
-	const winPatterns = [
-		[0,1,2],[3,4,5],[6,7,8],
-		[0,3,6],[1,4,7],[2,5,8],
-		[0,4,8],[2,4,6]
-	];
+  setupDiv.style.display = "none";
+  gameDiv.style.display = "block";
 
-	// Start Game
-	submitBtn.addEventListener("click", function () {
-		player1 = player1Input.value;
-		player2 = player2Input.value;
-
-		if (!player1 || !player2) return;
-
-		startScreen.style.display = "none";
-		gameScreen.style.display = "block";
-
-		message.textContent = `${player1}, you're up`;
-	});
-
-	// Handle Cell Click
-	cells.forEach((cell, index) => {
-		cell.addEventListener("click", function () {
-
-			if (cell.textContent || !gameActive) return;
-
-			cell.textContent = currentPlayer;
-
-			if (checkWin()) {
-				const winner = currentPlayer === "X" ? player1 : player2;
-				message.textContent = `${winner} congratulations you won!`;
-				gameActive = false;
-				return;
-			}
-
-			// Switch player
-			currentPlayer = currentPlayer === "X" ? "O" : "X";
-
-			const nextPlayer = currentPlayer === "X" ? player1 : player2;
-			message.textContent = `${nextPlayer}, you're up`;
-		});
-	});
-
-	// Check Win
-	function checkWin() {
-		return winPatterns.some(pattern => {
-			return pattern.every(i => {
-				return cells[i].textContent === currentPlayer;
-			});
-		});
-	}
-
+  renderBoard();
+  updateMessage();
 });
+
+function renderBoard() {
+  boardDiv.innerHTML = "";
+  boardState.forEach((val, index) => {
+	const cell = document.createElement("div");
+	cell.classList.add("cell");
+	cell.id = index + 1;
+	cell.textContent = val;
+
+	cell.addEventListener("click", () => handleClick(index));
+
+	boardDiv.appendChild(cell);
+  });
+}
+
+function handleClick(index) {
+  if (boardState[index] !== "") return;
+
+  boardState[index] = currentPlayer;
+  renderBoard();
+
+  if (checkWinner()) {
+	const winnerName = currentPlayer === "X" ? player1 : player2;
+	messageDiv.textContent = `${winnerName} congratulations you won!`;
+	return;
+  }
+
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
+  updateMessage();
+}
+
+function updateMessage() {
+  const name = currentPlayer === "X" ? player1 : player2;
+  messageDiv.textContent = `${name}, you're up`;
+}
+
+function checkWinner() {
+  return winPatterns.some(pattern => {
+	const [a, b, c] = pattern;
+	return (
+	  boardState[a] &&
+	  boardState[a] === boardState[b] &&
+	  boardState[a] === boardState[c]
+	);
+  });
+}
