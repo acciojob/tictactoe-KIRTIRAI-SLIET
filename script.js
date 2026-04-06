@@ -7,7 +7,7 @@ const messageDiv = document.querySelector(".message");
 
 let player1 = "";
 let player2 = "";
-let currentPlayer = "X";
+let currentPlayer = "x";
 let boardState = ["", "", "", "", "", "", "", "", ""];
 
 const winPatterns = [
@@ -53,17 +53,17 @@ function handleClick(index) {
   renderBoard();
 
   if (checkWinner()) {
-	const winnerName = currentPlayer === "X" ? player1 : player2;
-	messageDiv.textContent = `${winnerName} congratulations you won!`;
+	const winnerName = currentPlayer === "x" ? player1 : player2;
+	messageDiv.textContent = `${winnerName}, congratulations you won!`;
 	return;
   }
 
-  currentPlayer = currentPlayer === "X" ? "O" : "X";
+  currentPlayer = currentPlayer === "x" ? "o" : "x";
   updateMessage();
 }
 
 function updateMessage() {
-  const name = currentPlayer === "X" ? player1 : player2;
+  const name = currentPlayer === "x" ? player1 : player2;
   messageDiv.textContent = `${name}, you're up`;
 }
 
