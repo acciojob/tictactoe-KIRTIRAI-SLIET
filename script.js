@@ -54,7 +54,7 @@ function handleClick(index) {
 
   if (checkWinner()) {
 	const winnerName = currentPlayer === "x" ? player1 : player2;
-	messageDiv.textContent = `${winnerName}, congratulations you won!`;
+	messageDiv.textContent = `${winnerName} congratulations you won!`;
 	return;
   }
 
